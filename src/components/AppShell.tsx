@@ -105,12 +105,17 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
       {/* Main */}
       <div className="flex-1 flex flex-col overflow-hidden">
         <header className="h-14 flex items-center justify-between px-4 bg-white border-b border-blue-100 shrink-0">
-          <button className="lg:hidden text-gray-500" onClick={() => setMobileOpen(true)}>
-            <svg width="22" height="22" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-              <path d="M4 6h16M4 12h16M4 18h16" />
-            </svg>
-          </button>
-          <div className="flex items-center gap-3 ml-auto">
+          <div className="flex items-center gap-3">
+            <button className="lg:hidden text-gray-500" onClick={() => setMobileOpen(true)}>
+              <svg width="22" height="22" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                <path d="M4 6h16M4 12h16M4 18h16" />
+              </svg>
+            </button>
+            <span className="hidden lg:block text-sm font-semibold" style={{ color: "#0D1E4A" }}>
+              {NAV.find(n => n.href === pathname)?.label ?? ""}
+            </span>
+          </div>
+          <div className="flex items-center gap-3">
             <span className={`flex items-center gap-1 text-xs font-medium ${statusColor}`}>
               {status === "ready" ? <Wifi size={14} /> : <WifiOff size={14} />}
               {statusLabel}
