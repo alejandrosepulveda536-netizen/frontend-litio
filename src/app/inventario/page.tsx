@@ -7,14 +7,14 @@ import { Plus, Package, ArrowDownCircle, ArrowUpCircle, BarChart3, Save } from "
 
 interface Producto {
   id?: string; nombre?: string; descripcion?: string; categoria?: string;
-  precio?: number; costo?: number; unidad?: string; activo?: boolean;
+  precio_unitario?: number; costo_unitario?: number; activo?: boolean;
 }
 interface Movimiento {
   id?: string; producto_id?: string; cantidad?: number; tipo?: string;
   fecha?: string; nota?: string; productos?: { id: string; nombre: string };
 }
 interface StockItem {
-  id?: string; nombre?: string; categoria?: string; precio?: number;
+  id?: string; nombre?: string; categoria?: string; precio_unitario?: number;
   inventario_fisico?: { stock_fisico: number }[];
   stock_calculado?: number;
 }
@@ -147,7 +147,6 @@ export default function InventarioPage() {
                   { label: "Nombre", field: "nombre" as keyof Producto, required: true },
                   { label: "Categoria", field: "categoria" as keyof Producto },
                   { label: "Descripcion", field: "descripcion" as keyof Producto },
-                  { label: "Unidad (kg, und, par...)", field: "unidad" as keyof Producto },
                 ].map(({ label, field, required }) => (
                   <div key={field}>
                     <label className="block text-xs text-gray-500 mb-1">{label}{required ? " *" : ""}</label>
@@ -163,8 +162,8 @@ export default function InventarioPage() {
                     <label className="block text-xs text-gray-500 mb-1">Precio venta</label>
                     <input
                       type="number" min={0}
-                      value={nuevoProducto.precio || ""}
-                      onChange={e => setNuevoProducto(p => ({ ...p, precio: Number(e.target.value) }))}
+                      value={nuevoProducto.precio_unitario || ""}
+                      onChange={e => setNuevoProducto(p => ({ ...p, precio_unitario: Number(e.target.value) }))}
                       className="w-full px-3 py-2 rounded-lg border border-blue-200 text-sm outline-none focus:border-blue-400"
                     />
                   </div>
@@ -172,8 +171,8 @@ export default function InventarioPage() {
                     <label className="block text-xs text-gray-500 mb-1">Costo</label>
                     <input
                       type="number" min={0}
-                      value={nuevoProducto.costo || ""}
-                      onChange={e => setNuevoProducto(p => ({ ...p, costo: Number(e.target.value) }))}
+                      value={nuevoProducto.costo_unitario || ""}
+                      onChange={e => setNuevoProducto(p => ({ ...p, costo_unitario: Number(e.target.value) }))}
                       className="w-full px-3 py-2 rounded-lg border border-blue-200 text-sm outline-none focus:border-blue-400"
                     />
                   </div>
@@ -276,9 +275,9 @@ export default function InventarioPage() {
                 <tr className="border-b border-blue-50 text-left">
                   <th className="px-5 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wide">Producto</th>
                   <th className="px-5 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wide">Categoria</th>
+                  <th className="px-5 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wide">Descripcion</th>
                   <th className="px-5 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wide">Precio</th>
                   <th className="px-5 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wide">Costo</th>
-                  <th className="px-5 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wide">Unidad</th>
                   <th className="px-5 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wide">Estado</th>
                 </tr>
               </thead>
@@ -298,13 +297,13 @@ export default function InventarioPage() {
                       </div>
                     </td>
                     <td className="px-5 py-3 text-sm text-gray-600">{p.categoria || "—"}</td>
+                    <td className="px-5 py-3 text-xs text-gray-500 max-w-xs truncate">{p.descripcion || "—"}</td>
                     <td className="px-5 py-3 text-sm text-gray-700 font-mono">
-                      {p.precio != null ? `$${p.precio.toLocaleString("es-CO")}` : "—"}
+                      {p.precio_unitario != null && p.precio_unitario > 0 ? `$${p.precio_unitario.toLocaleString("es-CO")}` : "—"}
                     </td>
                     <td className="px-5 py-3 text-sm text-gray-500 font-mono">
-                      {p.costo != null ? `$${p.costo.toLocaleString("es-CO")}` : "—"}
+                      {p.costo_unitario != null && p.costo_unitario > 0 ? `$${p.costo_unitario.toLocaleString("es-CO")}` : "—"}
                     </td>
-                    <td className="px-5 py-3 text-sm text-gray-500">{p.unidad || "—"}</td>
                     <td className="px-5 py-3">
                       <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${p.activo !== false ? "bg-green-100 text-green-700" : "bg-gray-100 text-gray-500"}`}>
                         {p.activo !== false ? "Activo" : "Inactivo"}
@@ -412,7 +411,7 @@ export default function InventarioPage() {
                         {fisico != null ? fisico : <span className="text-gray-300">—</span>}
                       </td>
                       <td className="px-5 py-3 text-sm text-gray-600 font-mono">
-                        {s.precio != null ? `$${s.precio.toLocaleString("es-CO")}` : "—"}
+                        {s.precio_unitario != null ? `$${s.precio_unitario.toLocaleString("es-CO")}` : "—"}
                       </td>
                     </tr>
                   );
