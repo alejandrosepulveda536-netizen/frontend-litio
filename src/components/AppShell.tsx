@@ -5,12 +5,13 @@ import { useRouter, usePathname } from "next/navigation";
 import Link from "next/link";
 import { getSession, clearSession } from "@/lib/auth";
 import { apiFetch } from "@/lib/api";
-import { LayoutDashboard, MessageSquare, Users, Bot, FolderOpen, LogOut, Wifi, WifiOff } from "lucide-react";
+import { LayoutDashboard, MessageSquare, Users, Bot, FolderOpen, LogOut, Wifi, WifiOff, Boxes } from "lucide-react";
 
 const NAV = [
   { href: "/dashboard", label: "Dashboard", Icon: LayoutDashboard },
   { href: "/chats", label: "Chats", Icon: MessageSquare },
   { href: "/contactos", label: "Contactos", Icon: Users },
+  { href: "/inventario", label: "Inventario", Icon: Boxes },
   { href: "/bot-config", label: "Bot Config", Icon: Bot },
   { href: "/archivos", label: "Archivos", Icon: FolderOpen },
 ];
