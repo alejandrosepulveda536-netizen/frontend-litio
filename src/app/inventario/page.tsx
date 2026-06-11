@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import AppShell from "@/components/AppShell";
 import { apiFetch } from "@/lib/api";
-import { Plus, Package, ArrowDownCircle, ArrowUpCircle, BarChart3, Save } from "lucide-react";
+import { Plus, Package, ArrowDownCircle, ArrowUpCircle, BarChart3, Save, FileDown } from "lucide-react";
 
 interface Producto {
   id?: string; nombre?: string; descripcion?: string; categoria?: string;
@@ -20,6 +20,23 @@ interface StockItem {
 }
 
 type Tab = "productos" | "movimientos" | "stock";
+
+function fichaUrl(nombre: string): string | null {
+  const n = (nombre || "").toUpperCase().replace(/\s+/g, "_");
+  const map: Record<string, string> = {
+    "EVE_25P": "LitioCeldas_EVE_25P.pdf",
+    "EVE_26V": "LitioCeldas_EVE_26V.pdf",
+    "EVE_33V": "LitioCeldas_EVE_33V.pdf",
+    "EVE_35V": "LitioCeldas_EVE_35V.pdf",
+    "EVE_40P": "LitioCeldas_EVE_40P.pdf",
+    "EVE_50E": "LitioCeldas_EVE_50E.pdf",
+    "EVE_MB31": "LitioCeldas_EVE_MB31.pdf",
+    "DMEGC_26E": "LitioCeldas_DMEGC_26E.pdf",
+    "DMEGC_29E": "LitioCeldas_DMEGC_29E.pdf",
+  };
+  const key = Object.keys(map).find(k => n.includes(k));
+  return key ? `/fichas/${map[key]}` : null;
+}
 
 export default function InventarioPage() {
   const [tab, setTab] = useState<Tab>("productos");
@@ -279,13 +296,14 @@ export default function InventarioPage() {
                   <th className="px-5 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wide">Precio</th>
                   <th className="px-5 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wide">Costo</th>
                   <th className="px-5 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wide">Estado</th>
+                  <th className="px-5 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wide">Ficha</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-blue-50">
                 {loading ? (
-                  <tr><td colSpan={6} className="px-5 py-10 text-center text-gray-400 text-sm">Cargando...</td></tr>
+                  <tr><td colSpan={7} className="px-5 py-10 text-center text-gray-400 text-sm">Cargando...</td></tr>
                 ) : productos.length === 0 ? (
-                  <tr><td colSpan={6} className="px-5 py-10 text-center text-gray-400 text-sm">Sin productos registrados</td></tr>
+                  <tr><td colSpan={7} className="px-5 py-10 text-center text-gray-400 text-sm">Sin productos registrados</td></tr>
                 ) : productos.map((p, i) => (
                   <tr key={p.id || i} className="hover:bg-blue-50/50 transition-colors">
                     <td className="px-5 py-3">
@@ -309,13 +327,31 @@ export default function InventarioPage() {
                         {p.activo !== false ? "Activo" : "Inactivo"}
                       </span>
                     </td>
+                    <td className="px-5 py-3">
+                      {fichaUrl(p.nombre || "") ? (
+                        <a
+                          href={fichaUrl(p.nombre || "") as string}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="flex items-center gap-1 px-2 py-1 rounded-lg text-xs font-medium transition-colors"
+                          style={{ background: "#F2F6FD", color: "#1E60D4" }}
+                          title="Descargar ficha tecnica"
+                        >
+                          <FileDown size={13} /> PDF
+                        </a>
+                      ) : (
+                        <span className="text-gray-300 text-xs">—</span>
+                      )}
+                    </td>
                   </tr>
                 ))}
               </tbody>
             </table>
             {!loading && productos.length > 0 && (
-              <div className="px-5 py-3 border-t border-blue-50 text-xs text-gray-400">
-                {productos.length} producto{productos.length !== 1 ? "s" : ""}
+              <div className="px-5 py-3 border-t border-blue-50 text-xs text-gray-400 flex items-center gap-2">
+                <span>{productos.length} producto{productos.length !== 1 ? "s" : ""}</span>
+                <span className="text-gray-300">|</span>
+                <span>{productos.filter(p => fichaUrl(p.nombre || "")).length} con ficha tecnica disponible</span>
               </div>
             )}
           </div>
